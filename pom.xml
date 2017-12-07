@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.9.RELEASE</version>
+		<version>1.5.7.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
@@ -25,6 +25,14 @@
 	</properties>
 
 	<dependencies>
+	
+		<!-- Local dependencies -->
+		<dependency>
+			<groupId>com.samyuktatech</groupId>
+			<artifactId>GroupTracker-Comman</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
