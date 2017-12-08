@@ -29,7 +29,7 @@ public class Group {
 	@Column(name = "name")
 	private String name;
 	
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
         name = "group_user", 
         joinColumns = { @JoinColumn(name = "group_id") }, 
@@ -41,7 +41,7 @@ public class Group {
 	@Column(name = "created_date")
 	private Date createdDate;
 	
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.MERGE })
 	@JoinColumn(name = "user_id")
 	private User createdBy;
 

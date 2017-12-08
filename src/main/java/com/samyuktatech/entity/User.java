@@ -28,6 +28,8 @@ public class User {
 	@Column(name = "phone")
 	private String phone;
 	
+	public User() {}
+	
 	public User(Long id) {
 		this.id = id;
 	}
