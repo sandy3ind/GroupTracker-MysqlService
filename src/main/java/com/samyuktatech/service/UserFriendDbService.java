@@ -18,6 +18,7 @@ import com.samyuktatech.entity.User;
 import com.samyuktatech.entity.UserFriend;
 import com.samyuktatech.repository.UserFriendRepository;
 import com.samyuktatech.repository.UserRepository;
+import com.samyuktatech.util.Utility;
 
 @RestController
 @RequestMapping("/user/friend")
@@ -33,33 +34,43 @@ public class UserFriendDbService {
 	 * @return
 	 */
 	@PostMapping
-	public ResponseEntity<?> save(@RequestBody com.samyuktatech.comman.model.UserFriend userFriend) {
+	public ResponseEntity<?> save(@RequestBody com.samyuktatech.comman.model.UserFriend modelUserFriend) {
 		
 		// Check if this relation already exists
-		// Check if user has sent same request again
-		Long isSent = userFriendRepository.countByUserIdAndFriendIdAndIsRequestSent(userFriend.getUserId(),
-				userFriend.getFriendId(), userFriend.isRequestSent());
-		if (isSent > 0) {
-			return new ResponseEntity<>("Request already sent", HttpStatus.CONFLICT);	
-		}
 		// Check if friend already accepted it
-		Long isAccpeted = userFriendRepository.countByUserIdAndFriendIdAndIsRequestAccepted(userFriend.getUserId(),
-				userFriend.getFriendId(), userFriend.isRequestAccepted());
+		Long isAccpeted = userFriendRepository.countByUserIdAndFriendIdAndIsRequestAccepted(modelUserFriend.getUserId(),
+				modelUserFriend.getFriendId(), modelUserFriend.isRequestAccepted());
 		if (isAccpeted > 0) {
 			return new ResponseEntity<>("Request already accpeted", HttpStatus.CONFLICT);	
 		}
 		
-		UserFriend userFriendEntity = new UserFriend();
-		userFriendEntity.setUserId(userFriend.getUserId());
-		userFriendEntity.setFriendId(userFriend.getFriendId());		
-		userFriendEntity.setRequestSent(userFriend.isRequestSent());
-		userFriendEntity.setRequestSentDate(userFriend.getRequestSentDate());
-		userFriendEntity.setRequestAccepted(userFriend.isRequestAccepted());
-		userFriendEntity.setRequestAcceptedDate(userFriend.getRequestAcceptedDate());
+		UserFriend userFriendEntity = Utility.userFriendModelToEntity(modelUserFriend);		
 		
 		userFriendRepository.save(userFriendEntity);
 		
 		return new ResponseEntity<>(userFriendEntity, HttpStatus.CREATED);		
 	}	
+	
+	/**
+	 * Get UserFriend by userId and friendId
+	 * 
+	 * @param userId
+	 * @param friendId
+	 * @return
+	 */
+	@GetMapping("/{userId}/{friendId}")
+	public ResponseEntity<?> getByUserIdAndFriendId(
+			@PathVariable("userId") Long userId,
+			@PathVariable("friendId") Long friendId) {
+		
+		UserFriend userFriend = userFriendRepository.findByUserIdAndFriendId(userId, friendId);
+		
+		if (userFriend != null) {
+			return ResponseEntity.ok(Utility.userFriendEntityToModel(userFriend));
+		}
+		
+		return ResponseEntity.noContent().build();	
+		
+	}
 	
 }
