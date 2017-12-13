@@ -1,5 +1,6 @@
 package com.samyuktatech.util;
 
+import com.samyuktatech.entity.User;
 import com.samyuktatech.entity.UserFriend;
 
 public class Utility {
@@ -26,6 +27,24 @@ public class Utility {
 	}
 	
 	/**
+	 * Convert User Entity to its Model
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public static com.samyuktatech.comman.model.User userEntityToModel(User user) {
+		
+		com.samyuktatech.comman.model.User modelUser = new com.samyuktatech.comman.model.User();
+				
+		modelUser.setId(user.getId());
+		modelUser.setName(user.getName());
+		modelUser.setEmail(user.getEmail());
+		modelUser.setPhone(user.getPhone());		
+		
+		return modelUser;
+	}
+	
+	/**
 	 * Convert UserFriend Model to its Entity
 	 * 
 	 * @param modelUserFriend
@@ -45,4 +64,6 @@ public class Utility {
 		
 		return entityUserFriend;
 	}
+	
+	
 }

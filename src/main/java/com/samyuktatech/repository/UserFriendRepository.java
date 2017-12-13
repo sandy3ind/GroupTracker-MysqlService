@@ -1,5 +1,7 @@
 package com.samyuktatech.repository;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
 import com.samyuktatech.entity.UserFriend;
@@ -15,5 +17,7 @@ public interface UserFriendRepository extends CrudRepository<UserFriend, Long> {
 	UserFriend findByUserIdAndFriendId(Long userId, Long friendId);
 	
 	UserFriend findByUserIdAndFriendIdAndIsRequestAccepted(Long userId, Long friendId, boolean isRequestAccepted);
+
+	List<UserFriend> findByUserIdOrFriendIdAndIsRequestAccepted(Long userId, Long friendId, boolean isRequestAccepted);
 
 }

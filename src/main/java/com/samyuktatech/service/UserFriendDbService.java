@@ -1,6 +1,9 @@
 package com.samyuktatech.service;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +29,9 @@ public class UserFriendDbService {
 	
 	@Autowired
 	private UserFriendRepository userFriendRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
 
 	/**
 	 * Save User Friend entity
@@ -72,5 +78,45 @@ public class UserFriendDbService {
 		return ResponseEntity.noContent().build();	
 		
 	}
+	
+	/**
+	 * Get all the friends of a user and paginate the result
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping("/{userId}")
+	public ResponseEntity<?> getFriends(@PathVariable("userId") Long userId) {
+		
+		List<UserFriend> userFriends = userFriendRepository.findByUserIdOrFriendIdAndIsRequestAccepted(
+				userId, userId, true);
+		
+		if (!userFriends.isEmpty()) {			
+			
+			// Iterate and build Users list out of UserFriend list
+			// If user.id == userId then request has been sent by this user
+			// else sent by other user
+			
+			List<com.samyuktatech.comman.model.User> modelUsers = 
+					userFriends
+						.stream()
+							.filter(u -> u.getUserId() != null && u.getFriendId() != null)
+							.map(u -> {								
+								if (u.getUserId().equals(userId)) {
+									return Utility.userEntityToModel(userRepository.findOne(u.getFriendId()));
+								}
+								else {
+									return Utility.userEntityToModel(userRepository.findOne(u.getUserId()));
+								}
+							})
+							.collect(Collectors.toList());
+			
+			return ResponseEntity.ok(modelUsers);
+		}
+		
+		return ResponseEntity.ok(Collections.emptyList());
+	}
+	
+	
 	
 }
